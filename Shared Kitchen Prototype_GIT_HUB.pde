@@ -8,14 +8,15 @@ TuioProcessing tuioClient;
 // these are some helper variables which are used
 // to create scalable graphical feedback
 String apiKey = ""; // Add your personal API key accessed from IFTTT webhooks client
-String eventNameRED = "SmartBulb1_Red";
-String eventNameTEAL = "SmartBulb2_Teal";
+String eventNameRED = "SmartBulb1_Red"; // IFTTT recipe under webhook client
+String eventNameTEAL = "SmartBulb2_Teal"; 
 String eventCurrent1 = "SmartBulb1_SoftWhite";
 String eventCurrent2 = "SmartBulb2_SoftWhite";
 String SpotifySink = "Sink_Play";
 String SpotifyStove = "Stove_Play";
 
-float cursor_size = 15;
+// Fiducial tracker graphic representation
+float cursor_size = 15; 
 float object_size = 60;
 float table_size = 760;
 float scale_factor = 1;
@@ -23,15 +24,16 @@ PFont font;
 PImage photo;
 color backgroundColor = color(255);
 
-int xseg = 4; //screen segments
+// x-position tracking
+int xseg = 4; //screen segments, how many positions does your space have to track
 int xpos1 = 1;
-int xpos2 = (width/xseg);
-int xpos3 = (width/xseg*2);
-int xpos4 = (width/xseg*3);
-int xpos5 = (width);
+int xpos2 = (width/xseg); // not used
+int xpos3 = (width/xseg*2); // not used
+int xpos4 = (width/xseg*3); // not used
+int xpos5 = (width); // not used
 
-String lastZone = "";
-String currentZone = "";
+String lastZone = ""; // state tracking last fiducial zone
+String currentZone = ""; // state tracking current fiducial zone
 
 boolean verbose = false; // print console debug messages
 boolean callback = true; // updates only after callbacks
@@ -75,24 +77,24 @@ void draw() {
      fill(255);
      text(""+tobj.getSymbolID(), tobj.getScreenX(width), tobj.getScreenY(height));
      
-     if ((tobj.getScreenX(width) > xpos1)  && (tobj.getScreenX(width) < (width/xseg))) {  //Jacob's sink location, left most pixels
+     if ((tobj.getScreenX(width) > xpos1)  && (tobj.getScreenX(width) < (width/xseg))) {  // This was my sink location, left most pixels
        currentZone = "zoneA";
 
-     } else if ((tobj.getScreenX(width) > (width/xseg))  && (tobj.getScreenX(width) < (width/xseg*2))) {
+     } else if ((tobj.getScreenX(width) > (width/xseg))  && (tobj.getScreenX(width) < (width/xseg*2))) { // This was my workstation location, no action sent
        currentZone = "zoneB";
        
-     } else if  ((tobj.getScreenX(width) > (width/xseg*2))  && (tobj.getScreenX(width) < (width/xseg*3))) {
+     } else if  ((tobj.getScreenX(width) > (width/xseg*2))  && (tobj.getScreenX(width) < (width/xseg*3))) { // This was my workstation location, no action sent
        currentZone = "zoneC";
        
-     } else if ((tobj.getScreenX(width) > (width/xseg*3))  && (tobj.getScreenX(width) < (width/xseg*4))) {  //Jacobs stove location, right most pixels
+     } else if ((tobj.getScreenX(width) > (width/xseg*3))  && (tobj.getScreenX(width) < (width/xseg*4))) {  //This was my stove location, right most pixels
        currentZone = "zoneD";
      }
      
      if (lastZone == ""){
        lastZone = currentZone;       
        if (currentZone == "zoneA"){
-         //Kylies's Sink
-           background(0, 0, 255);
+         //Sink Location GetRequest
+           background(0, 0, 255); // Monitor change to help track get request triggers on the users end
            GetRequest get = new GetRequest("https://maker.ifttt.com/trigger/" + eventNameTEAL + "/with/key/" + apiKey);
            get.send();
            
@@ -103,14 +105,14 @@ void draw() {
            getSink.send();
            
        } else if (currentZone == "zoneB"){
-         //DO SOMETHING
+         //No specified action given
          
        } else if (currentZone == "zoneC"){
-         //DO SOMETHING
+         //No specified action given
          
        } else if (currentZone == "zoneD"){
-         //DO SOMETHING
-           background(255, 0, 0);
+         //Stove Location GetRequest
+           background(255, 0, 0); // Monitor change to help track get request triggers on the users end
            GetRequest get = new
            GetRequest("https://maker.ifttt.com/trigger/" + eventNameRED + "/with/key/" + apiKey);
            get.send();
@@ -125,10 +127,10 @@ void draw() {
        
          
        }
-     } else if (lastZone != currentZone){
+     } else if (lastZone != currentZone){ 
        lastZone = currentZone;
        if (currentZone == "zoneA"){
-         //DO SOMETHING
+         //Sink Location GetRequest
            background(0, 0, 255);
            GetRequest get = new GetRequest("https://maker.ifttt.com/trigger/" + eventNameTEAL + "/with/key/" + apiKey);
            get.send();
@@ -141,13 +143,13 @@ void draw() {
             
            noLoop();
        } else if (currentZone == "zoneB"){
-         //DO SOMETHING
+         //No specified action given
          
        } else if (currentZone == "zoneC"){
-         //DO SOMETHING
+         //No specified action given
          
        } else if (currentZone == "zoneD"){
-         //Kylies's Stove
+         //Stove Location GetRequest
            background(255, 0, 0);
            GetRequest get = new
            GetRequest("https://maker.ifttt.com/trigger/" + eventNameRED + "/with/key/" + apiKey);
@@ -164,6 +166,7 @@ void draw() {
      }
   }
   
+  // Given Tuio Code
    ArrayList<TuioCursor> tuioCursorList = tuioClient.getTuioCursorList();
    for (int i=0;i<tuioCursorList.size();i++) {
       TuioCursor tcur = tuioCursorList.get(i);
