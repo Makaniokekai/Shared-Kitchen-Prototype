@@ -7,7 +7,7 @@ TuioProcessing tuioClient;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
-String apiKey = "bnkWY8-JrKulNmQqcFVTDD";
+String apiKey = ""; // Add your personal API key accessed from IFTTT webhooks client
 String eventNameRED = "SmartBulb1_Red";
 String eventNameTEAL = "SmartBulb2_Teal";
 String eventCurrent1 = "SmartBulb1_SoftWhite";
